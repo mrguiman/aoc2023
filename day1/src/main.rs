@@ -1,24 +1,41 @@
 fn main() -> std::io::Result<()> {
     let input = String::from_utf8(std::fs::read("day1/input")?);
     if let Ok(contents) = input {
-        let answer = contents.split("\n")
-            .fold(0, |acc, line| {
-                let target_digits = (
-                    find_next_digit_as_number_or_letters(line.chars().collect::<Vec<char>>()),
-                    find_next_digit_as_number_or_letters(line.chars().rev().collect::<Vec<char>>())
-                    );
-                match target_digits {
-                    (Some(first_digit), Some(second_digit)) => {
-                        return acc + String::from_iter([first_digit, second_digit]).parse::<i32>().unwrap_or(0)
-                    },
-                    _ => return acc
-                };
-            });
-        println!("{}", answer);
+        println!("----");
+        println!("Day 1");
+        println!("Part 1: {}", compute_answer(&contents, part_1_parser));
+        println!("Part 2: {}", compute_answer(&contents, part_2_parser));
+        println!("----");
     }
     return Ok(())
 }
 
+fn part_1_parser(line: &str) -> (Option<char>, Option<char>) {
+    (
+        line.chars().find(|c| c.is_digit(10)),
+        line.chars().rev().find(|c| c.is_digit(10))
+    )
+}
+
+fn part_2_parser(line: &str) -> (Option<char>, Option<char>) {
+    (
+        find_next_digit_as_number_or_letters(line.chars().collect::<Vec<char>>()),
+        find_next_digit_as_number_or_letters(line.chars().rev().collect::<Vec<char>>())
+    )
+}
+
+fn compute_answer(contents: &String, parser: fn(&str) -> (Option<char>, Option<char>)) -> i32 {
+    contents.split("\n")
+        .fold(0, |acc, line| {
+            let target_digits = parser(line);
+            match target_digits {
+                (Some(first_digit), Some(second_digit)) => {
+                    return acc + String::from_iter([first_digit, second_digit]).parse::<i32>().unwrap_or(0)
+                },
+                _ => return acc
+            };
+        })
+}
 const DIGITS_IN_LETTERS: [&'static str; 18] = ["one", "eno", "two", "owt", "three", "eerht", "four", "ruof", 
       "five", "evif", "six", "xis", "seven", "neves", "eight", "thgie", "nine", "enin"];
 
