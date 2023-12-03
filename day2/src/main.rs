@@ -57,10 +57,7 @@ fn parse_game_number(opt_str: Option<&str>) -> Option<usize> {
     opt_str.map(|str| str.splitn(2, ' '))
         .and_then(Iterator::last)
         .map(str::parse::<usize>)
-        .and_then(|x| match x {
-            Ok(number) => Some(number),
-            _ => None
-        })
+        .and_then(Result::ok)
 
 }
 fn parse_color_and_number(draw: &str) -> Option<(String, usize)> {
