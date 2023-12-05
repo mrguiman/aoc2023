@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::ops::Range;
 use std::str::FromStr;
 use std::collections::VecDeque;
@@ -39,7 +40,7 @@ fn compute_answer_2(contents: &str) -> String {
 
     format!("{}", seeds
             .as_slice()
-            .chunks(2)
+            .par_chunks(2)
             .flat_map(|seeds| (seeds[0]..seeds[0]+seeds[1]))
             .map(|x|  crawl(x, &mappings))
             .min().unwrap())
